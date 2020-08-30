@@ -1,41 +1,57 @@
-const express = require('express');
-const router = express.Router();
-const posts = require('../lib/posts');
+const router = require('express').Router();
+const posts = require('../lib/Posts');
 
-//collections
+
 //return index of all posts
-router.get('/', function(req, res, next) {
-    res.send(posts.index());
+router.get('/', async (req, res) => {
+    const RESPONSE = await posts.index();
+    if(RESPONSE.error){
+        res.send(RESPONSE.message)
+    } else {
+        res.send(RESPONSE.posts)
+    };
 });
 
 //create a new post
-router.post('/', function(req, res, next) {
-    const { postTitle, postContent } = req.body;
-    const id = posts.create(postTitle, postContent);
-
-    res.send({ id });
+router.post('/', async (req, res) => {
+    const RESPONSE = await posts.create(req.body);
+    res.send(RESPONSE.message);
 });
 
 //info on post :id
-router.get('/:id', function(req, res, next) {
+router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    res.send(posts.find(id));
+    const RESPONSE = await posts.find(id);
+    if(RESPONSE.error){
+        res.send(RESPONSE.message)
+    } else {
+        res.send(RESPONSE.post)
+    };
+    ;
 });
 
 //removes an post
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', async (req, res) => {
     const id = req.params.id;
-    posts.delete(id);
-    res.sendStatus(200);
+    const RESPONSE = posts.delete(id);
+    if(RESPONSE.error){
+        res.send(RESPONSE.message)
+    } else {
+        res.sendStatus(200)
+    };
 });
 
 //update an post
-router.put('/:id', function(req, res, next) {
+router.put('/:id', async (req, res) => {
     const id = req.params.id;
-    const { postTitle, postContent } = req.body;
+    const payload = req.body;
 
-    posts.update(id, postTitle, postContent);
-    res.sendStatus(200);
+    const RESPONSE = await posts.update(id, payload);
+    if(RESPONSE.error){
+        res.send(RESPONSE.message)
+    } else {
+        res.sendStatus(200)
+    };
 });
 
 module.exports = router;
