@@ -10,7 +10,7 @@ const PsotSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    text: { 
+    content: { 
         type: String, 
         required: true,
      },
@@ -18,7 +18,9 @@ const PsotSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    image: Buffer,
+    imageURL: {
+        type: String
+    },
 });
 
 module.exports = new mongoose.model('Posts', PsotSchema);

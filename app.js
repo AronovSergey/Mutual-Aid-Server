@@ -3,8 +3,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-
+var MulterMiddleware = require('./lib/middlewares/MulterMiddleware');
 var CORSMiddleware =  require('./lib/middlewares/CORSMiddleware'); 
+var ImageMiddleware = require('./lib/middlewares/ImageMiddleware');
 
 var postsRoute = require('./routes/posts');
 var indexRouter = require('./routes/index');
@@ -37,6 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', CORSMiddleware);
+app.use('/api/v1.0/images', MulterMiddleware.single('image'), ImageMiddleware);
 
 // setting the routes
 app.use('/', indexRouter);
