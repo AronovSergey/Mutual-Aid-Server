@@ -3,10 +3,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 var CORSMiddleware =  require('./lib/middlewares/CORSMiddleware'); 
 
 var postsRoute = require('./routes/posts');
 var indexRouter = require('./routes/index');
+var imagesRouter = require('./routes/images');
 
 // setting up the connection to MongoDB server  
 require('dotenv/config');
@@ -39,6 +41,7 @@ app.use('/api', CORSMiddleware);
 // setting the routes
 app.use('/', indexRouter);
 app.use('/api/v1.0/posts', postsRoute);
+app.use('/api/v1.0/images', imagesRouter)
 
 
 module.exports = app;
