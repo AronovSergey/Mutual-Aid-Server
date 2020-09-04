@@ -21,6 +21,9 @@ const PsotSchema = new mongoose.Schema({
     imageURL: {
         type: String
     },
+    tags: {
+        type: [String],
+    }
 });
 
 module.exports = new mongoose.model('Posts', PsotSchema);

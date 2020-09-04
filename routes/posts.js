@@ -5,17 +5,13 @@ const posts = require('../lib/Posts');
 //return index of all posts
 router.get('/', async (req, res) => {
     const RESPONSE = await posts.index();
-    if(RESPONSE.error){
-        res.send(RESPONSE.message)
-    } else {
-        res.send(RESPONSE.posts)
-    };
+    res.send(RESPONSE)
 });
 
 //create a new post
 router.post('/', async (req, res) => {
     const RESPONSE = await posts.create(req.body);
-    res.send(RESPONSE.message);
+    res.send(RESPONSE);
 });
 
 //info on post :id
