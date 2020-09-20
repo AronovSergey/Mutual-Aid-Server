@@ -9,20 +9,26 @@ const PsotSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+        min: 5,
+        max: 50,
     },
     content: { 
         type: String, 
         required: true,
+        min: 10,
+        max: 1000,
      },
     date: {
         type: Date,
         default: Date.now,
     },
     imageURL: {
-        type: String
+        type: String,
+        required: true,
     },
     tags: {
         type: [String],
+        required: true,
     }
 });
 

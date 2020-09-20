@@ -1,19 +1,24 @@
 const router = require('express').Router();
 const Post = require('../models/Post');
 const verify = require('../middlewares/verifyTokenMiddleware');
+const { postValidation } = require('../validation/post');
 
 //return index of all posts
-router.get('/', async (req, res) => {
+router.get('/', verify, async (req, res) => {
     try {
         const posts = await Post.find();
         res.send({posts});
     } catch (err) {
         res.status(400).send("DB Fetching Error");
     }
-});
+}); 
 
 //create a new post
-router.post('/', async (req, res) => {
+router.post('/', verify, async (req, res) => {
+    //lets validate the data before we a user
+    const { error } = await postValidation(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
     const post = new Post(req.body);
         try {
             await post.save();
@@ -24,7 +29,7 @@ router.post('/', async (req, res) => {
 });
 
 //info on post :id
-router.get('/:id', async (req, res) => {
+router.get('/:id', verify, async (req, res) => {
     const id = req.params.id;
     try {
         const post = await Post.findById(id);

@@ -12,7 +12,8 @@ var ImageMiddleware = require('./middlewares/ImageMiddleware');
 var postsRouter = require('./routes/posts');
 var indexRouter = require('./routes/index');
 var imagesRouter = require('./routes/images');
-var authRouter = require('./routes/auth');
+var usersRouter = require('./routes/users');
+var likeRouter = require('./routes/likes');
 
 // setting up the connection to MongoDB server  
 const DB_NAME = 'test_DB'
@@ -44,6 +45,7 @@ app.use('/api/v1.0/images', MulterMiddleware.single('image'), ImageMiddleware);
 app.use('/', indexRouter);
 app.use('/api/v1.0/posts', postsRouter);
 app.use('/api/v1.0/images', imagesRouter);
-app.use('/api/v1.0/user', authRouter);
+app.use('/api/v1.0/user', usersRouter);
+app.use('/api/v1.0/likes', likeRouter);
 
 module.exports = app;
