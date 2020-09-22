@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { registerValidation, loginValidation } = require('../validation/auth');
 const { postValidation } = require('../validation/post');
 const verify = require('../middlewares/verifyTokenMiddleware');
+const getLikes = require('./likes');
 
 router.post('/register', async (req, res) => {
 	const { user_name, email, password } = req.body;
@@ -66,7 +67,7 @@ router.get('/profile', verify, async (req, res) => {
 	}
 });
 
-//update an post
+//update an user data
 router.put('/:id', verify, async (req, res) => {
     const id = req.params.id;
     const user = await User.findById(id);

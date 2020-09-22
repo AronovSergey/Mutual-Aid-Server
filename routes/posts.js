@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Post = require('../models/Post');
+const Like = require('../models/Like');
 const verify = require('../middlewares/verifyTokenMiddleware');
 const { postValidation } = require('../validation/post');
 
@@ -64,6 +65,45 @@ router.put('/:id', async (req, res) => {
             { $set: { author, title, content } 
         });
         res.send('post has been successfully updated');
+    } catch {
+        res.status(400).send("DB Updating Error");
+    }
+});
+
+router.get('/:id/like', verify,  async (req, res) => {
+    const postID = req.params.id;
+
+    const post = await Post.findById(postID);
+    if (!post) return res.status(400).send('Invalid id');
+
+    const userHandle = req.user._id;
+    if(!userHandle) res.status(400).send('Invalid Token');
+    
+    const like = new Like({ userHandle, postID });
+    try {
+        await like.save();
+        post.likes += 1;
+        await post.save();
+        res.send(post);
+    } catch {
+        res.status(400).send("DB Updating Error");
+    }
+});
+
+router.get('/:id/unlike', verify,  async (req, res) => {
+    const postID = req.params.id;
+
+    const post = await Post.findById(postID);
+    if (!post) return res.status(400).send('Invalid id');
+
+    const userHandle = req.user._id;
+    if(!userHandle) res.status(400).send('Invalid Token');
+
+    try {
+        await Like.remove({ userHandle, postID });
+        post.likes -= 1;
+        await post.save();
+        res.send(post);
     } catch {
         res.status(400).send("DB Updating Error");
     }

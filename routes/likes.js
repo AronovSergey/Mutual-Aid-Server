@@ -3,18 +3,14 @@ const Like = require('../models/Like');
 const User = require('../models/User');
 const verify = require('../middlewares/verifyTokenMiddleware');
 
-//return index of all like by by post id
-router.get('/:id', verify, async (req, res) => {
-    const postID = req.params.id;
-
-    const userID = req.user._id;
-    if(!userID) res.status(400).send('Invalid Token');
+//return index of all likes of specific user
+router.get('/', verify, async (req, res) => {
+    const userHandle = req.user._id;
+    if(!userHandle) res.status(400).send('Invalid Token');
 
     try {
-        const likes = await Like.find({ postID, userID });
-        const like = likes[0];
-        console.log(like);
-        res.send(like ? true : false);
+        const likes = await Like.find({ userHandle });
+        res.send(likes);
     } catch (err) {
         res.status(400).send("DB Fetching Error");
     }
@@ -24,10 +20,10 @@ router.get('/:id', verify, async (req, res) => {
 router.post('/', verify, async (req, res) => {
     const { postID } = req.body;
 
-    const userID = req.user._id;
-    if(!userID) res.status(400).send('Invalid Token');
+    const userHandle = req.user._id;
+    if(!userHandle) res.status(400).send('Invalid Token');
 
-    const like = new Like({ userID, postID });
+    const like = new Like({ userHandle, postID });
     try {
         await like.save();
         res.send({ like });
