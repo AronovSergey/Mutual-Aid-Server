@@ -147,6 +147,25 @@ router.get('/comments/:id', verify, async (req, res) => {
     }
 }); 
 
+//removes an comment
+router.delete('/comments/:id', verify, async (req, res) => {
+    const id = req.params.id;
+
+    const comment = await Comment.findById(id);
+    if (!comment) return res.status(400).send('Invalid id');
+
+    const post = await Post.findById(comment.postID);
+
+    try{
+        post.comments -= 1;
+        await post.save();
+        await Comment.remove({ _id: id })
+        res.send('comment has been successfully removed');
+    } catch {
+        res.status(400).send("DB Deleting Error");
+    }
+});
+
 
 
 module.exports = router;
