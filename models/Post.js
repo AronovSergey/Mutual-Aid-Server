@@ -4,7 +4,6 @@ const PsotSchema = new mongoose.Schema({
     author: { 
         type: String, 
         required: true,
-        default: "Sergey"
      },
     title: {
         type: String,
@@ -31,6 +30,11 @@ const PsotSchema = new mongoose.Schema({
         required: true,
     },
     likes: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
+    comments: {
         type: Number,
         required: true,
         default: 0,

@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const Post = require('../models/Post');
 const Like = require('../models/Like');
+const Comment = require('../models/Comment');
 const verify = require('../middlewares/verifyTokenMiddleware');
 const { postValidation } = require('../validation/post');
+const { commentValidation } = require('../validation/comment');
 
 //return index of all posts
 router.get('/', verify, async (req, res) => {
@@ -42,7 +44,7 @@ router.get('/:id', verify, async (req, res) => {
 });
 
 //removes an post
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verify, async (req, res) => {
     const id = req.params.id;
     try{
         await Post.remove({ _id: id })
@@ -70,6 +72,8 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+//*****************************************//
+//Like a post
 router.get('/:id/like', verify,  async (req, res) => {
     const postID = req.params.id;
 
@@ -89,7 +93,7 @@ router.get('/:id/like', verify,  async (req, res) => {
         res.status(400).send("DB Updating Error");
     }
 });
-
+//Unlike a post
 router.get('/:id/unlike', verify,  async (req, res) => {
     const postID = req.params.id;
 
@@ -108,5 +112,41 @@ router.get('/:id/unlike', verify,  async (req, res) => {
         res.status(400).send("DB Updating Error");
     }
 });
+
+//*****************************************//
+//Create a comment
+router.post('/comments', verify,  async (req, res) => {
+    //lets validate the data before we creating a comment
+    const { error } = await commentValidation(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const post = await Post.findById(req.body.postID);
+    if (!post) return res.status(400).send('Invalid id');
+
+    const comment = new Comment(req.body);
+
+        try {
+            await comment.save();
+            post.comments += 1;
+            await post.save();
+            res.send({comment});
+        } catch(err) {
+            res.status(400).send("DB Posting Error");
+        }
+});
+
+//Return all comments of a post
+router.get('/comments/:id', verify, async (req, res) => {
+    const postID = req.params.id;
+    console.log(postID)
+    try {
+        const comments = await Comment.find({postID});
+        res.send({comments});
+    } catch (err) {
+        res.status(400).send("DB Fetching Error");
+    }
+}); 
+
+
 
 module.exports = router;
