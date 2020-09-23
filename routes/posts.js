@@ -160,7 +160,7 @@ router.delete('/comments/:id', verify, async (req, res) => {
         post.comments -= 1;
         await post.save();
         await Comment.remove({ _id: id })
-        res.send('comment has been successfully removed');
+        res.send(comment);
     } catch {
         res.status(400).send("DB Deleting Error");
     }
