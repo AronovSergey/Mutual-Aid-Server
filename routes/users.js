@@ -92,4 +92,19 @@ router.put('/:id', verify, async (req, res) => {
     }
 });
 
+router.get('/:user_name', verify, async (req, res) => {
+	const user_name = req.params.user_name;
+    if(!user_name) res.status(400).send('Invalid Token');
+
+	try {
+		//checking if the user is already in the database
+		const user = await User.findOne({ user_name });
+		user["password"] = "encrypted";
+		if(!user) return res.status(400).send('Invalid Token');
+		res.send({user});
+	} catch (err) {
+		res.status(400).send(err);
+	}
+});
+
 module.exports = router;

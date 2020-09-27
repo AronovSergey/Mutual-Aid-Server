@@ -5,6 +5,7 @@ const Comment = require('../models/Comment');
 const verify = require('../middlewares/verifyTokenMiddleware');
 const { postValidation } = require('../validation/post');
 const { commentValidation } = require('../validation/comment');
+const { createTagsVector, contentBasedFilteringScore } = require('../utils/helperHandler');
 
 //return index of all posts
 router.get('/', verify, async (req, res) => {
@@ -30,6 +31,26 @@ router.post('/', verify, async (req, res) => {
             res.status(400).send("DB Posting Error");
         }
 });
+
+router.get('/recommended', verify, async (req, res) => {
+    const userHandle = req.user._id;
+    if(!userHandle) res.status(400).send('Invalid Token');
+    try {
+        const fetchedUserLikes = await Like.find({ userHandle });
+        const postsIds = fetchedUserLikes.map((like) => like.postID);
+        const fetchedUserLikedPosts = await Post.find({_id: postsIds });
+        const tagsVector = createTagsVector(fetchedUserLikedPosts);
+        const fetchedPosts = await Post.find();
+        fetchedPosts.sort((p1, p2) =>
+            contentBasedFilteringScore(tagsVector, p2) -
+            contentBasedFilteringScore(tagsVector, p1)
+        );
+        //const posts = returnedPostsFormat(fetchedPosts);
+        res.send(fetchedPosts);
+    } catch (err) {
+        res.status(400).send("DB Fetching Error");
+    }    
+})
 
 //info on post :id
 router.get('/:id', verify, async (req, res) => {
@@ -138,7 +159,6 @@ router.post('/comments', verify,  async (req, res) => {
 //Return all comments of a post
 router.get('/comments/:id', verify, async (req, res) => {
     const postID = req.params.id;
-    console.log(postID)
     try {
         const comments = await Comment.find({postID});
         res.send({comments});
