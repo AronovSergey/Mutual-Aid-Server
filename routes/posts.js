@@ -51,6 +51,20 @@ router.get('/recommended', verify, async (req, res) => {
     }    
 })
 
+router.get('/search/:search_expression', verify, async (req, res) => {
+    const search_expression = req.params.search_expression;
+    try {
+        const posts = await Post.find();
+        const fitlerdPosts = await posts.filter(
+          post => post.author.toLowerCase().search(search_expression) >= 0 ||
+                  post.title.toLowerCase().search(search_expression) >= 0 ||
+                  post.content.toLowerCase().search(search_expression) >= 0)
+        res.send({posts: fitlerdPosts});
+    } catch (err) {
+        res.status(400).send("DB Fetching Error");
+    }    
+})
+    
 //info on post :id
 router.get('/:id', verify, async (req, res) => {
     const id = req.params.id;
