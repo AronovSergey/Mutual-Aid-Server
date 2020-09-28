@@ -5,7 +5,7 @@ const Comment = require('../models/Comment');
 const verify = require('../middlewares/verifyTokenMiddleware');
 const { postValidation } = require('../validation/post');
 const { commentValidation } = require('../validation/comment');
-const { createTagsVector, contentBasedFilteringScore } = require('../utils/helperHandler');
+const { createTagsVector, contentBasedFilteringScore, returnedPostsFormat } = require('../utils/helperHandler');
 
 //return index of all posts
 router.get('/', verify, async (req, res) => {
@@ -45,8 +45,7 @@ router.get('/recommended', verify, async (req, res) => {
             contentBasedFilteringScore(tagsVector, p2) -
             contentBasedFilteringScore(tagsVector, p1)
         );
-        //const posts = returnedPostsFormat(fetchedPosts);
-        res.send(fetchedPosts);
+        res.send({"posts": fetchedPosts});
     } catch (err) {
         res.status(400).send("DB Fetching Error");
     }    
