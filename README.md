@@ -49,8 +49,6 @@ npm install --save express-handlebars
 
 npm install --save fs 
 
-npm install --save graphql
-
 npm install --save jsonwebtoken 
 
 npm install --save multer
@@ -64,10 +62,6 @@ npm install --save pg
 npm install --save pg-hstore
 
 npm install --save redis
-
-npm install --save mysql2
-
-npm install --save sequelize
 
 npm install --save validator
 
