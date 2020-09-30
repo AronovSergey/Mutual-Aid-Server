@@ -1,6 +1,8 @@
 # Mutual Aid (Server Side)
 ## Description 
 > MutualAid Web Application: COVID-19 has harmed small business and individual people. Therefore, I’ve Created a recommendation system web application, where they can add posts about their business and offered products and where other users can comment and like those posts. Users get recommendations about relevant posts based on their liked posts.
+## Link to a video showing a brief overview of the system
+https://youtu.be/dsFFBOKicn0
 ## Technology Wise
 These next technologies are the ones used in this project:
 * Node.js
