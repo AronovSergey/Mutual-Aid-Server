@@ -8,7 +8,7 @@ const { commentValidation } = require('../validation/comment');
 const { createTagsVector, contentBasedFilteringScore, returnedPostsFormat } = require('../utils/helperHandler');
 
 //return index of all posts
-router.get('/', verify, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const posts = await Post.find();
         res.send({posts});
@@ -51,7 +51,7 @@ router.get('/recommended', verify, async (req, res) => {
     }    
 })
 
-router.get('/search/:search_expression', verify, async (req, res) => {
+router.get('/search/:search_expression', async (req, res) => {
     const search_expression = req.params.search_expression;
     try {
         const posts = await Post.find();
@@ -170,7 +170,7 @@ router.post('/comments', verify,  async (req, res) => {
 });
 
 //Return all comments of a post
-router.get('/comments/:id', verify, async (req, res) => {
+router.get('/comments/:id', async (req, res) => {
     const postID = req.params.id;
     try {
         const comments = await Comment.find({postID});
